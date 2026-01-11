@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新世纪福音战士 | 官方主题网站</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
+    <!-- GLTFLoader -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- OrbitControls 用于相机控制 -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <!-- ScrollTrigger 插件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <!-- 外部样式文件 -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-opacity-90 bg-gray-900 backdrop-blur-md shadow-lg">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2">
+                <img src="./img/NERV_Logo.png" alt="NERV Logo" class="h-10 w-auto">
+                <span class="text-xl font-bold tech-font glow">NERV</span>
+            </a>
+            
+            <!-- 桌面导航 -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#overview" class="nav-link text-gray-300 hover:text-white transition-colors">作品概览</a>
+                <a href="#characters" class="nav-link text-gray-300 hover:text-white transition-colors">角色图鉴</a>
+                <a href="#eva-units" class="nav-link text-gray-300 hover:text-white transition-colors">EVA机体</a>
+                <a href="#plot-analysis" class="nav-link text-gray-300 hover:text-white transition-colors">剧情解析</a>
+                <a href="#sync-rate-test" class="nav-link text-gray-300 hover:text-white transition-colors">同步率测试</a>
+                <!-- <button class="btn-primary px-4 py-2 rounded-md text-white font-medium">登录</button> -->
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+    </header>
+    
+    <!-- 移动端导航菜单 -->
+    <div id="overlay" class="overlay"></div>
+    <div id="nav-mobile" class="nav-mobile fixed top-0 left-0 h-full w-64 bg-gray-900 z-50 shadow-lg p-5">
+        <div class="flex justify-between items-center mb-8">
+            <span class="text-xl font-bold tech-font glow">NERV</span>
+            <button id="close-menu" class="text-white focus:outline-none">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <div class="flex flex-col space-y-4">
+            <a href="#overview" class="text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-700">作品概览</a>
+            <a href="#characters" class="text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-700">角色图鉴</a>
+            <a href="#eva-units" class="text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-700">EVA机体</a>
+            <a href="#plot-analysis" class="text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-700">剧情解析</a>
+            <a href="#sync-rate-test" class="text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-700">同步率测试</a>
+            <button class="btn-primary px-4 py-2 rounded-md text-white font-medium mt-4">登录</button>
+        </div>
+    </div>
+    
+    <!-- 英雄区 -->
+    <section class="hero-section min-h-screen flex items-center justify-center pt-16">
+        <div class="container mx-auto px-4 py-20">
+            <div class="hero-content text-center max-w-4xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 glow">EVA</h1>
+                <p id="scramble-text" class="text-xl md:text-2xl mb-8 text-gray-300">在世界末日前，少年少女们驾驶着EVA，与使徒展开了一场关乎人类存亡的战斗</p>
+                <div class="flex flex-col md:flex-row justify-center gap-4">
+                    <button id="start-exploring" class="btn-primary px-8 py-3 rounded-md text-white font-medium text-lg">开始探索</button>
+                    <a href="https://www.bilibili.com/bangumi/media/md1635?spm_id_from=333.1369.0.0" target="_blank" rel="noopener noreferrer" class="inline-block px-8 py-3 rounded-md text-white font-medium text-lg border border-white hover:bg-white hover:text-gray-900 transition-all">去哔哩哔哩观看</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 作品概览 -->
+    <section id="overview" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-3xl md:text-4xl font-bold mb-12 glow-blue">作品概览</h2>
+            <!-- 作品轮播 -->
+            <div class="relative">
+                <div class="carousel-container overflow-hidden">
+                    <div class="carousel-track flex transition-transform duration-500 ease-in-out">
+                        <!-- 作品1: 新世纪福音战士 -->
+                        <div class="carousel-item w-full md:w-full flex-shrink-0">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                <div class="fade-in">
+                                    <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-xv4ileqgde/44104fd1107641e8b400b7a1dea6fff5~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=wOKccwOEVPGQqa1sCpcn1oXf7BA%3D" alt="新世纪福音战士" class="rounded-lg shadow-xl w-full h-auto">
+                                </div>
+                                <div class="fade-in">
+                                    <h3 class="text-2xl font-bold mb-4 text-gray-100">关于《新世纪福音战士》</h3>
+                                    <p class="mb-4 text-gray-300">《新世纪福音战士》（日语：新世紀エヴァンゲリオン；英语：Neon Genesis Evangelion）是由GAINAX制作、庵野秀明执导的日本动画作品，于1995年10月4日至1996年3月27日在东京电视台首播，全26集。</p>
+                                    <p class="mb-4 text-gray-300">故事背景设定在2015年，讲述了14岁的少年碇真嗣被父亲碇源堂召唤到第三新东京市，成为泛用人形决战兵器EVA初号机的驾驶员，与其他驾驶员一起对抗名为"使徒"的神秘生命体，以保护人类免受毁灭。</p>
+                                    <p class="mb-6 text-gray-300">作品融合了机器人、宗教、心理学等元素，深入探讨了人类存在的意义、人际关系、心理创伤等主题，成为日本动画史上具有里程碑意义的作品。</p>
+                                    <div class="flex flex-wrap gap-4">
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">科幻</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">机器人</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">心理</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">宗教</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 作品2: EVA新剧场版 -->
+                        <div class="carousel-item w-full md:w-full flex-shrink-0">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                <div class="fade-in">
+                                    <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-xv4ileqgde/44104fd1107641e8b400b7a1dea6fff5~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=wOKccwOEVPGQqa1sCpcn1oXf7BA%3D" alt="新世纪福音战士" class="rounded-lg shadow-xl w-full h-auto">
+                                </div>
+                                <div class="fade-in">
+                                    <h3 class="text-2xl font-bold mb-4 text-gray-100">关于《EVA新剧场版》</h3>
+                                    <p class="mb-4 text-gray-300">《福音战士新剧场版》（日语：ヱヴァンゲリヲン新劇場版）是对《新世纪福音战士》进行重制的动画电影系列，由khara工作室制作，庵野秀明执导。</p>
+                                    <p class="mb-4 text-gray-300">系列包括四部作品：《序》（2007年）、《破》（2009年）、《Q》（2012年）和《终》（2021年）。新剧场版在保留原作核心精神的同时，对剧情、角色和世界观进行了重新诠释和扩展。</p>
+                                    <p class="mb-6 text-gray-300">新剧场版采用了先进的动画技术，画面更加精美，战斗场面更加震撼，同时也为粉丝们带来了全新的故事体验。</p>
+                                    <div class="flex flex-wrap gap-4">
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">科幻</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">机器人</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">电影</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">重制版</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 作品3: EVA漫画 -->
+                        <div class="carousel-item w-full md:w-full flex-shrink-0">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                <div class="fade-in">
+                                    <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-xv4ileqgde/44104fd1107641e8b400b7a1dea6fff5~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=wOKccwOEVPGQqa1sCpcn1oXf7BA%3D" alt="新世纪福音战士" class="rounded-lg shadow-xl w-full h-auto">
+                                </div>
+                                <div class="fade-in">
+                                    <h3 class="text-2xl font-bold mb-4 text-gray-100">关于《EVA漫画》</h3>
+                                    <p class="mb-4 text-gray-300">《新世纪福音战士》漫画版由贞本义行创作，于1995年开始在《月刊少年Ace》上连载，直到2013年完结，共14卷。</p>
+                                    <p class="mb-4 text-gray-300">漫画版在剧情上与动画版有所不同，特别是在后期发展和结局部分，为读者提供了另一种对EVA世界观的解读。贞本义行作为动画版的角色设计师，在漫画中更加深入地展现了角色的内心世界和情感变化。</p>
+                                    <p class="mb-6 text-gray-300">漫画版以其精美的画风和细腻的情感描写，受到了众多粉丝的喜爱，成为EVA系列的重要组成部分。</p>
+                                    <div class="flex flex-wrap gap-4">
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">科幻</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">漫画</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">心理</span>
+                                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">连载</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 轮播导航按钮 -->
+                <button id="carousel-prev" class="carousel-btn carousel-btn-left absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-800 bg-opacity-70 hover:bg-opacity-100 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all z-10">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="carousel-next" class="carousel-btn carousel-btn-right absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-800 bg-opacity-70 hover:bg-opacity-100 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all z-10">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <!-- 轮播指示器 -->
+                <div class="carousel-indicators flex justify-center mt-8 space-x-2">
+                    <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-600 hover:bg-accent transition-colors active"></button>
+                    <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-600 hover:bg-accent transition-colors"></button>
+                    <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-600 hover:bg-accent transition-colors"></button>
+                </div>
+            </div>
+            
+            <!-- 最新资讯 -->
+            <div class="mt-20">
+                <h3 class="text-2xl font-bold mb-8 text-gray-100">最新资讯</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card rounded-lg overflow-hidden fade-in">
+                        <img src="https://p3-doubao-search-sign.byteimg.com/tos-cn-i-xv4ileqgde/cac278237dcc46fa90f79e3e3ba18f45~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=fn%2FPafy6YX7rjY6aG425xGB8GUU%3D" alt="EVA新剧场版" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <span class="text-xs text-gray-400">2026-01-10</span>
+                            <h4 class="text-xl font-bold mb-2 mt-1">《新世纪福音战士》新剧场版系列完全解析</h4>
+                            <p class="text-gray-300 mb-4">从《序》到《终》，EVA新剧场版系列为我们带来了全新的故事体验...</p>
+                            <a href="#" class="text-accent hover:text-highlight transition-colors flex items-center">
+                                阅读更多 <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card rounded-lg overflow-hidden fade-in">
+                        <img src="https://p11-doubao-search-sign.byteimg.com/pgc-image/6ea1fb397ffc4bb4bc9a6e574b927bec~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=LuSVXLIlYe%2F7vqQ%2FUbyDMTw97Ew%3D" alt="EVA机体" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <span class="text-xs text-gray-400">2026-01-08</span>
+                            <h4 class="text-xl font-bold mb-2 mt-1">EVA机体全解析：从初号机到十三号机</h4>
+                            <p class="text-gray-300 mb-4">深入了解EVA系列机体的设计、性能和背景故事...</p>
+                            <a href="#" class="text-accent hover:text-highlight transition-colors flex items-center">
+                                阅读更多 <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card rounded-lg overflow-hidden fade-in">
+                        <img src="https://p3-doubao-search-sign.byteimg.com/tos-cn-i-xv4ileqgde/ea71204d47484612b653e8d6921d0250~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=6vf%2BwYIZwlG9mt1kQYkvdB88MNE%3D" alt="明日香" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <span class="text-xs text-gray-400">2026-01-05</span>
+                            <h4 class="text-xl font-bold mb-2 mt-1">角色深度解析：明日香的内心世界</h4>
+                            <p class="text-gray-300 mb-4">探索明日香的成长历程、心理创伤和角色发展...</p>
+                            <a href="#" class="text-accent hover:text-highlight transition-colors flex items-center">
+                                阅读更多 <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 角色图鉴 -->
+    <section id="basic-card characters" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-3xl md:text-4xl font-bold mb-12 glow-blue">角色图鉴</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- 碇真嗣 -->
+                <div class="character-card rounded-lg overflow-hidden fade-in">
+                    <img src="https://p11-doubao-search-sign.byteimg.com/labis/3720ff756ae61d157dd48ec801704d91~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=RBJ96faA9wyNpdCbrWNJtlQWm9c%3D" alt="碇真嗣" class="w-full h-80 object-cover">
+                    <div class="character-info">
+                        <h3 class="text-xl font-bold mb-2">碇真嗣</h3>
+                        <p class="text-sm text-gray-300 mb-2">年龄：14岁</p>
+                        <p class="text-sm text-gray-300 mb-2">身份：EVA初号机驾驶员，第三适格者</p>
+                        <p class="text-sm text-gray-300">性格内向、消极，有很深的心理创伤，但在战斗中展现出非凡的潜力。</p>
+                    </div>
+                </div>
+                
+                <!-- 绫波丽 -->
+                <div class="character-card rounded-lg overflow-hidden fade-in">
+                    <img src="https://p26-doubao-search-sign.byteimg.com/labis/f9a675b66d0802fa7f8cea7bf022647b~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=gkFCgt0PmHJ5c1rX0RjAip1wn3A%3D" alt="绫波丽" class="w-full h-80 object-cover">
+                    <div class="character-info">
+                        <h3 class="text-xl font-bold mb-2">绫波丽</h3>
+                        <p class="text-sm text-gray-300 mb-2">年龄：14岁</p>
+                        <p class="text-sm text-gray-300 mb-2">身份：EVA零号机驾驶员，第一适格者</p>
+                        <p class="text-sm text-gray-300">神秘的少女，沉默寡言，面无表情，是碇唯的克隆人，体内寄宿着莉莉丝的灵魂。</p>
+                    </div>
+                </div>
+                
+                <!-- 明日香 -->
+                <div class="character-card rounded-lg overflow-hidden fade-in">
+                    <img src="https://p11-doubao-search-sign.byteimg.com/tos-cn-i-xv4ileqgde/40f39df448174b9b98142ac2bcb8a2c0~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=mrw8T6Vppsv9z6vFrzHrX3VlAN4%3D" alt="明日香" class="w-full h-80 object-cover">
+                    <div class="character-info">
+                        <h3 class="text-xl font-bold mb-2">明日香</h3>
+                        <p class="text-sm text-gray-300 mb-2">年龄：14岁</p>
+                        <p class="text-sm text-gray-300 mb-2">身份：EVA二号机驾驶员，第二适格者</p>
+                        <p class="text-sm text-gray-300">天才少女，自尊心强，争强好胜，有四分之三德国血统和四分之一日本血统。</p>
+                    </div>
+                </div>
+                
+                <!-- 渚薰 -->
+                <div class="character-card rounded-lg overflow-hidden fade-in">
+                    <img src="https://p3-doubao-search-sign.byteimg.com/tos-cn-i-xv4ileqgde/cac278237dcc46fa90f79e3e3ba18f45~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=fn%2FPafy6YX7rjY6aG425xGB8GUU%3D" alt="渚薰" class="w-full h-80 object-cover">
+                    <div class="character-info">
+                        <h3 class="text-xl font-bold mb-2">渚薰</h3>
+                        <p class="text-sm text-gray-300 mb-2">年龄：15岁</p>
+                        <p class="text-sm text-gray-300 mb-2">身份：EVA六号机驾驶员，第五适格者</p>
+                        <p class="text-sm text-gray-300">神秘的少年，实际上是第十七使徒，与真嗣有着特殊的关系。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="btn-primary px-6 py-3 rounded-md text-white font-medium">查看更多角色</button>
+            </div>
+        </div>
+    </section>
+    <script src="./hexagon-bg.js"></script>
+    <script>
+        // 基本用法
+        const basicCard = document.getElementById('basic-card characters');
+        const hexBg = new HexagonBackground(basicCard);
+    </script>
+    
+    <!-- EVA机体 -->
+    <section id="eva-units" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-3xl md:text-4xl font-bold mb-12 glow-blue">EVA机体</h2>
+            
+            <!-- 3D模型展示 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+                <div class="fade-in">
+                    <h3 class="text-2xl font-bold mb-4 text-gray-100">EVA初号机</h3>
+                    <p class="mb-4 text-gray-300">EVA初号机是第一架正式的EVA机体，在第一次启动实验时寄宿上了碇唯的灵魂。涂装为紫色，外型与其他EVA有明显区别，最显著的是平坦的片状胸部装甲版和有棱有角的外表。</p>
+                    <p class="mb-6 text-gray-300">初号机是唯一一台从莉莉丝复制而来的EVA，拥有强大的自我修复能力和战斗潜力，曾多次在关键时刻暴走保护碇真嗣。</p>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold mb-2 text-gray-200">机体参数</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-gray-400">同步率</span>
+                                    <span class="text-sm text-gray-300">89%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" style="width: 89%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-gray-400">攻击力</span>
+                                    <span class="text-sm text-gray-300">95%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-gray-400">防御能力</span>
+                                    <span class="text-sm text-gray-300">87%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" style="width: 87%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-gray-400">机动性</span>
+                                    <span class="text-sm text-gray-300">82%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" style="width: 82%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">实验型</span>
+                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">莉莉丝复制体</span>
+                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">S2机关</span>
+                        <span class="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">高振动粒子刀</span>
+                    </div>
+                </div>
+                <div class="eva-model-container fade-in">
+                    <div id="eva-model" class="w-full h-full"></div>
+                </div>
+            </div>
+            
+            <!-- 其他机体 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 零号机 -->
+                <div class="card rounded-lg overflow-hidden fade-in">
+                    <img src="https://p11-doubao-search-sign.byteimg.com/labis/cdf780cece34c1735f3cef9138bf42f9~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=0oUNTDwjD1EKm%2BqtS1n%2BqwGgl48%3D" alt="零号机" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold mb-2">零号机</h4>
+                        <p class="text-gray-300 mb-4">最早开发成功的试用型EVA，为后来EVA的原型和范例。驾驶者是第一适格者绫波丽。</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-gray-800 rounded-full text-xs text-gray-300">试制型</span>
+                            <span class="px-2 py-1 bg-gray-800 rounded-full text-xs text-gray-300">单眼设计</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 二号机 -->
+                <div class="card rounded-lg overflow-hidden fade-in">
+                    <img src="https://p11-doubao-search-sign.byteimg.com/pgc-image/ce6e05b9e55a4b48911953034bfcd60e~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=JvErZ7gCa0v85OZRi0BaaNV%2Fwbc%3D" alt="二号机" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold mb-2">二号机</h4>
+                        <p class="text-gray-300 mb-4">世上第一台为实战而制造的EVA，外表涂装为红色。驾驶者是第二适格者明日香。</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-gray-800 rounded-full text-xs text-gray-300">制式型</span>
+                            <span class="px-2 py-1 bg-gray-800 rounded-full text-xs text-gray-300">实战专用</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 十三号机 -->
+                <div class="card rounded-lg overflow-hidden fade-in">
+                    <img src="https://p11-doubao-search-sign.byteimg.com/labis/439cd2788a675622cd36b4bef0a5a495~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=iIkvCuxiE8mzhTTjJDnAlWTtP5g%3D" alt="十三号机" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold mb-2">十三号机</h4>
+                        <p class="text-gray-300 mb-4">新剧场版中登场的机体，由碇真嗣和渚薰共同驾驶，拥有双插入栓系统。</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-gray-800 rounded-full text-xs text-gray-300">Mark系列</span>
+                            <span class="px-2 py-1 bg-gray-800 rounded-full text-xs text-gray-300">双驾驶员</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="btn-primary px-6 py-3 rounded-md text-white font-medium">查看全部机体</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 剧情解析 -->
+    <section id="plot-analysis" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title text-3xl md:text-4xl font-bold mb-12 glow-blue">剧情解析</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="card rounded-lg p-8 mb-8 fade-in">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-100">故事背景</h3>
+                        <p class="mb-4 text-gray-300">2000年，一颗陨石坠落在南极，造成了巨大灾难"第二次冲击"，导致世界人口减半。15年后，神秘的巨大生命体"使徒"开始袭击人类，为了对抗使徒，人类开发了泛用人形决战兵器"EVA"，并选拔了14岁的少年少女作为驾驶员。</p>
+                        <p class="text-gray-300">故事的核心围绕着碇真嗣、绫波丽和明日香三位驾驶员展开，他们在与使徒的战斗中，逐渐揭开了关于EVA、使徒和人类补完计划的真相。</p>
+                    </div>
+                    
+                    <div class="card rounded-lg p-8 fade-in">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-100">核心主题</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-lg font-semibold mb-2 text-gray-200">人类补完计划</h4>
+                                <p class="text-gray-300">SEELE组织的终极目标，旨在通过融合所有人类的灵魂，消除个体之间的隔阂，实现人类的"补完"。</p>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold mb-2 text-gray-200">存在的意义</h4>
+                                <p class="text-gray-300">作品深入探讨了人类存在的意义、个体与他人的关系，以及如何在充满痛苦的世界中找到生存的价值。</p>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold mb-2 text-gray-200">心理创伤</h4>
+                                <p class="text-gray-300">每个角色都有自己的心理创伤，作品通过他们的经历，展现了人类如何面对和克服内心的痛苦。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="card rounded-lg p-6 mb-8 fade-in">
+                        <h3 class="text-xl font-bold mb-4 text-gray-100">经典场景</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="bg-accent text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">1</span>
+                                <div>
+                                    <h4 class="font-semibold text-gray-200">初号机首次暴走</h4>
+                                    <p class="text-sm text-gray-300">在与第三使徒的战斗中，真嗣生命受到威胁，初号机首次暴走，展现出惊人的战斗力。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-accent text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">2</span>
+                                <div>
+                                    <h4 class="font-semibold text-gray-200">绫波丽的微笑</h4>
+                                    <p class="text-sm text-gray-300">在与第五使徒的战斗后，绫波丽对真嗣露出了难得的微笑，标志着她情感的觉醒。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-accent text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">3</span>
+                                <div>
+                                    <h4 class="font-semibold text-gray-200">渚薰之死</h4>
+                                    <p class="text-sm text-gray-300">真嗣被迫消灭了自己唯一的朋友渚薰，这一事件成为他心理崩溃的导火索。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-accent text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">4</span>
+                                <div>
+                                    <h4 class="font-semibold text-gray-200">第三次冲击</h4>
+                                    <p class="text-sm text-gray-300">在《真心为你》中，人类补完计划启动，世界迎来了终结与新生。</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card rounded-lg p-6 fade-in">
+                        <h3 class="text-xl font-bold mb-4 text-gray-100">观看顺序</h3>
+                        <ol class="space-y-3">
+                            <li class="flex items-center">
+                                <span class="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">1</span>
+                                <span class="text-gray-300">TV版（全26集）</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">2</span>
+                                <span class="text-gray-300">剧场版《死与新生》</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">3</span>
+                                <span class="text-gray-300">剧场版《真心为你》</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">4</span>
+                                <span class="text-gray-300">新剧场版《序》</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">5</span>
+                                <span class="text-gray-300">新剧场版《破》</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">6</span>
+                                <span class="text-gray-300">新剧场版《Q》</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 flex-shrink-0">7</span>
+                                <span class="text-gray-300">新剧场版《终》</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 同步率测试 -->
+    <section id="sync-rate-test" class="py-20 sync-rate-test">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="section-title text-3xl md:text-4xl font-bold mb-6 glow mx-auto inline-block">同步率测试</h2>
+                <p class="text-xl text-gray-300 mb-12">你是否有资格成为EVA驾驶员？测试你的同步率，看看你与哪位驾驶员最匹配！</p>
+                
+                <div class="card rounded-lg p-8 fade-in">
+                    <div class="mb-8">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-lg font-medium text-gray-200">测试进度</span>
+                            <span class="text-lg font-medium text-gray-200">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="test-question" class="mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-100">准备好开始测试了吗？</h3>
+                        <p class="text-gray-300 mb-8">这个测试将评估你的心理状态、性格特点和应对压力的能力，以确定你是否适合成为EVA驾驶员。</p>
+                        <div class="flex justify-center">
+                            <button id="start-test" class="btn-primary px-8 py-3 rounded-md text-white font-medium text-lg">开始测试</button>
+                        </div>
+                    </div>
+                    
+                    <div id="test-options" class="hidden space-y-4">
+                        <!-- 选项将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 tech-font glow">NERV</h3>
+                    <p class="text-gray-400 mb-4">人类补完计划执行机构</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-200">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#overview" class="text-gray-400 hover:text-white transition-colors">作品概览</a></li>
+                        <li><a href="#characters" class="text-gray-400 hover:text-white transition-colors">角色图鉴</a></li>
+                        <li><a href="#eva-units" class="text-gray-400 hover:text-white transition-colors">EVA机体</a></li>
+                        <li><a href="#plot-analysis" class="text-gray-400 hover:text-white transition-colors">剧情解析</a></li>
+                        <li><a href="#sync-rate-test" class="text-gray-400 hover:text-white transition-colors">同步率测试</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-200">相关资源</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">官方商店</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">周边商品</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">音乐会信息</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">展览活动</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">粉丝社区</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-200">联系我们</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2 text-gray-400"></i>
+                            <a href="mailto:info@nerv.org" class="text-gray-400 hover:text-white transition-colors">info@nerv.org</a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">+81-3-1234-5678</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">第三新东京市，日本</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+                <p class="text-gray-500 text-red-bg">© 2026 NERV. 新世纪福音战士版权归GAINAX所有。</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- 背景音乐 -->
+    <audio id="background-music" loop preload="auto">
+        <source src="mp3/EM20.mp3" type="audio/mpeg">
+        您的浏览器不支持音频元素。
+    </audio>
+    
+    <!-- 背景音乐控制按钮 -->
+    <div id="music-control" class="fixed bottom-4 right-4 bg-gray-800 bg-opacity-70 backdrop-filter blur(10px) rounded-full p-2 cursor-pointer z-50">
+        <i id="music-icon" class="fas fa-volume-up text-white text-xl"></i>
+    </div>
+    
+    <!-- 外部脚本文件 -->
+    <script src="script.js"></script>
+    
+</body>
+</html>

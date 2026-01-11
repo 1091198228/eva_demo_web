@@ -1,0 +1,407 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+    --primary-color: #0A1128;
+    --secondary-color: #2E294E;
+    --accent-color: #D90429;
+    --highlight-color: #EF476F;
+    --text-light: #F8F9FA;
+    --text-muted: #E5E5E5;
+}
+
+body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.tech-font {
+    font-family: 'Orbitron', 'Noto Sans SC', sans-serif;
+}
+
+.hero-section {
+    background: linear-gradient(rgba(10, 17, 40, 0.8), rgba(10, 17, 40, 0.9)), url('https://p11-doubao-search-sign.byteimg.com/labis/3720ff756ae61d157dd48ec801704d91~tplv-be4g95zd3a-image.jpeg?lk3s=feb11e32&x-expires=1783616614&x-signature=RBJ96faA9wyNpdCbrWNJtlQWm9c%3D');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.nav-link {
+    position: relative;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--accent-color);
+    transition: all 0.3s ease;
+    transform: skew(-20deg);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* 激活状态样式 - 红色背景白色字体 */
+.nav-link.active {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    transform: skew(-20deg);
+}
+
+.nav-link.active::after {
+    width: 0;
+}
+
+.card {
+    background: rgba(46, 41, 78, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(217, 4, 41, 0.2);
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.6s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    background-color: var(--highlight-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(217, 4, 41, 0.4);
+}
+
+.glow {
+    text-shadow: 0 0 10px rgba(217, 4, 41, 0.7), 0 0 20px rgba(217, 4, 41, 0.5);
+}
+
+.glow-blue {
+    text-shadow: 0 0 10px rgba(66, 153, 225, 0.7), 0 0 20px rgba(66, 153, 225, 0.5);
+}
+
+.section-title {
+    position: relative;
+    z-index: 1;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background-color: var(--accent-color);
+    margin-top: 8px;
+}
+
+.eva-model-container {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#eva-model {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.sync-rate-test {
+    background: linear-gradient(rgba(10, 17, 40, 0.9), rgba(10, 17, 40, 0.8)), url('https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/2c5c4fe6f7884270b297cadd8cdcd1f1~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260111010305983F757867DC7B82171A&rrcfp=f06b921b&x-expires=1770656650&x-signature=aNTJWNVuyD1Xydo01Ixc4yX27PQ%3D');
+    background-size: cover;
+    background-position: center;
+}
+
+.character-card {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.character-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(10, 17, 40, 0.9));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.character-card:hover::before {
+    opacity: 1;
+}
+
+.character-info {
+    position: absolute;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    transition: bottom 0.3s ease;
+}
+
+.character-card:hover .character-info {
+    bottom: 0;
+}
+
+.progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--highlight-color));
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+.nav-mobile {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.nav-mobile.active {
+    transform: translateX(0);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 动画类 */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 骨架屏效果 */
+.skeleton {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
+/* 轮播样式 */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+    .carousel-item {
+        width: 100%;
+    }
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(46, 41, 78, 0.7);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.carousel-btn:hover {
+    background-color: rgba(46, 41, 78, 1);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn-left {
+    left: 10px;
+}
+
+.carousel-btn-right {
+    right: 10px;
+}
+
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 8px;
+}
+
+.carousel-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicator:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.2);
+}
+
+.carousel-indicator.active {
+    background-color: var(--accent-color);
+    width: 20px;
+    border-radius: 6px;
+}
+
+.text-red-bg {
+    font: 700 1em/1 "Oswald", sans-serif;
+    letter-spacing: 0;
+    padding: .25em 0 .325em;
+    display: block;
+    margin: 0 auto;
+    text-shadow: 0 0 80px rgba(255, 255, 255, .5);
+
+    /* Clip Background Image */
+
+    background: url(./img/animated-text-fill.png) repeat-y;
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    /* Animate Background Image */
+
+    -webkit-text-fill-color: transparent;
+    -webkit-animation: aitf 80s linear infinite;
+
+    /* Activate hardware acceleration for smoother animations */
+
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+}
+
+@-webkit-keyframes aitf {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
